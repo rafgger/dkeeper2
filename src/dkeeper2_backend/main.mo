@@ -10,21 +10,29 @@ actor DKeeper { // actor is canister
       content: Text;
   };
 
-  var notes: List.List<Note> = List.nil<Note>(); // contain note type, empty nil object
+  stable var notes: List.List<Note> = List.nil<Note>(); // contain note type, empty nil object
 
   public func createNote(titleText: Text, contextText: Text) {
-
     let newNote: Note = {
       title = titleText;
       content = contextText;
-    };
-    
-  notes := List.push(newNote, notes);
-  Debug.print(debug_show (notes));
+    };    
+    notes := List.push(newNote, notes);
+    Debug.print(debug_show (notes));
   };
 
   public query func readNotes(): async [Note]{ // query to speed up
     return List.toArray(notes);
-  } 
+  }; 
+
+  public func deleteNote(id: Nat) {
+    if (id < List.size(notes)) {
+      let listFront = List.take(notes, id);
+      let listBack = List.drop(notes, id + 1);
+      notes := List.append(listFront, listBack);
+    } else {
+      Debug.print("Index out of bounds");
+    };
+  };
 
 }
