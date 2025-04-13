@@ -22,4 +22,9 @@ actor DKeeper { // actor is canister
   notes := List.push(newNote, notes);
   Debug.print(debug_show (notes));
   };
+
+  public query func readNotes(): async [Note]{ // query to speed up
+    return List.toArray(notes);
+  } 
+
 }
